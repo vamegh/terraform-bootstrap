@@ -1,39 +1,16 @@
-data "aws_caller_identity" "current" {}
-
 terraform {
-  required_version = ">= 0.12"
-}
+  required_version = ">= 1.3.0"
 
-resource "aws_s3_bucket" "state_bucket" {
-  bucket = local.name
-  # acl    = "private"
-
-  #versioning {
-  #  enabled = true
-  #}
-
-  tags = {
-    Name = local.name
+  required_providers {
+    aws   = ">= 3.59.0"
+    local = ">= 1.4"
   }
 }
 
-resource "aws_dynamodb_table" "state_locking_table" {
-  name           = local.name
-  read_capacity  = 10
-  write_capacity = 10
-  hash_key       = "LockID"
+#module "external_tagging" {
+#  count  = var.enable_tags_module ? 1 : 0
+#  source = "https://github.com/vamegh/terraform-tags.git?ref=v1.0.0"
+#
+#  tags = var.tags
+#}
 
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-
-  ttl {
-    attribute_name = "TimeToExist"
-    enabled        = false
-  }
-
-  tags = {
-    Name = local.name
-  }
-}
